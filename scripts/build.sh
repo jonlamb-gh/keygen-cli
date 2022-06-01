@@ -46,7 +46,8 @@ main() {
 }
 
 # FIXME(ezekg) Cross-compiling these distros on darwin/amd64 fails
-PLATFORMS=$(go tool dist list | grep -vE 'ios|android|js|aix|illumos|riscv64|plan9|solaris')
+#PLATFORMS=$(go tool dist list | grep -vE 'ios|android|js|aix|illumos|riscv64|plan9|solaris')
+PLATFORMS=$(go tool dist list | grep -E 'linux/amd64|windows/amd64')
 PACKAGE="github.com/keygen-sh/keygen-cli/cmd"
 VERSION=$(cat VERSION)
 

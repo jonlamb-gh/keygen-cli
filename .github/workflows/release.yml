@@ -1,0 +1,41 @@
+name: Release
+
+# Push events to matching v*, i.e. v1.0, v20.15.10
+on:
+  push:
+    tags:
+    - 'v*'
+
+jobs:
+  release:
+    name: Release
+    timeout-minutes: 120
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Install System Packages
+        run: |
+          sudo apt update
+          sudo apt-get install -y golang-1.16
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: |
+          echo "GOROOT=/usr/lib/go-1.16" >> $GITHUB_ENV
+          echo "GOPATH=$HOME/go" >> $GITHUB_ENV
+          echo "PATH=$GOROOT/bin:$PATH" >> $GITHUB_ENV
+          bash ./scripts/build.sh
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          draft: true
+          prerelease: false
+          name: Release
+          files: |
+            build/keygen_linux_amd64_1_0_1
+            build/keygen_windows_amd64_1_0_1.exe
